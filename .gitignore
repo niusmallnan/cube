@@ -1,0 +1,8 @@
+.DS_Store
+/.idea
+/**/bin
+/**/build
+/**/dist
+/**/.dapper
+/**/.trash-cache
+/**/*.log
