@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+ARCH=${ARCH:-"amd64"}
+SUFFIX=""
+source $(dirname $0)/version
+
+[ "${ARCH}" != "amd64" ] && SUFFIX="_${ARCH}"
+TAG=${TAG:-${VERSION}${SUFFIX}}
+REPO=${REPO:-rancher}
+
+if echo $TAG | grep -q dirty; then
+    TAG=dev
+fi
+
+cd $(dirname $0)/..
+
+mkdir -p dist/air-gap-proxy
+
+cd air-gap
+
+if dapper -d --build -f Dockerfile -- -t ${REPO}/cube-air-gap-proxy:${TAG} .; then
+	echo "${REPO}/cube-air-gap-proxy:${TAG}" >> ../dist/air-gap-proxy/images
+    elif [ "$?" != "42" ]; then
+        exit 1
+    else
+        echo "WARN: Skipping ${TAG}"
+fi
