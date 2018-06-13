@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+cd $(dirname $0)/..
+
+./scripts/build-images
+
+echo
+echo "Images ready to push:"
+cat dist/consoles/images
+echo
+
+cat dist/consoles/images | sed 's/^/docker push /' > dist/consoles/publish.sh
+chmod 755 dist/consoles/publish.sh
