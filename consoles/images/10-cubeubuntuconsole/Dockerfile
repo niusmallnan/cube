@@ -1,11 +1,13 @@
 FROM rancher/os-ubuntuconsole-base
 # FROM amd64=ubuntu:xenial arm64=arm64v8/ubuntu:xenial
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends iptables openssh-server rsync locales \
                            sudo vim less curl ca-certificates psmisc htop kmod iproute2 \
-                           net-tools \
+                           net-tools open-iscsi \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /etc/ssh/*key*
+
 RUN locale-gen en_US.UTF-8 \
     && addgroup --gid 1100 rancher \
     && addgroup --gid 1101 docker \
@@ -16,4 +18,7 @@ RUN locale-gen en_US.UTF-8 \
     && echo 'rancher ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
     && echo '## allow password less for docker user' >> /etc/sudoers \
     && echo 'docker ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+COPY rc.local /etc/rc.local
+
 ENTRYPOINT ["/usr/bin/ros", "entrypoint"]

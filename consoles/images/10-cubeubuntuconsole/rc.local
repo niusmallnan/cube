@@ -1,0 +1,42 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+CUBE_CONFIG_DIR="/var/lib/rancher/cube"
+RKE_BASE_CONFIG_FILE="/var/lib/rancher/cube/rke_base.yml"
+
+if [ ! -d "/run/lock" ]; then
+    mkdir /run/lock
+fi
+
+if [ ! -d "$CUBE_CONFIG_DIR" ]; then
+    mkdir $CUBE_CONFIG_DIR
+fi
+
+if [ ! -f "$RKE_BASE_CONFIG_FILE" ]; then
+    cat>$RKE_BASE_CONFIG_FILE<<EOF
+---
+kubernetes_version: v1.10.3-rancher2-1
+network:
+  plugin: flannel
+services:
+  kube-api:
+    extra_args:
+      feature-gates: MountPropagation=true
+  kubelet:
+    extra_args:
+      feature-gates: MountPropagation=true
+      volume-plugin-dir: /opt/rke/var/lib/kubelet/volumeplugins/
+EOF
+fi
+
+exit 0
