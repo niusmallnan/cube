@@ -19,6 +19,9 @@ RUN locale-gen en_US.UTF-8 \
     && echo '## allow password less for docker user' >> /etc/sudoers \
     && echo 'docker ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
+RUN curl -o /usr/bin/cube -sSL https://github.com/cnrancher/cube-cli/releases/download/v0.1.0/cube \
+    && chmod +x /usr/bin/cube
+
 COPY rc.local /etc/rc.local
 
 ENTRYPOINT ["/usr/bin/ros", "entrypoint"]
