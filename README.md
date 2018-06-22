@@ -9,4 +9,8 @@ sudo ros config set rancher.repositories.cube.url https://raw.githubusercontent.
 
 sudo ros console switch cube-ubuntu-console
 
+
+
+asdadad
+
 ```
